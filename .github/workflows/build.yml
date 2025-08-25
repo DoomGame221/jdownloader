@@ -1,11 +1,10 @@
-name: Java CI
+name: Java CI with Gradle Wrapper Generation
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +17,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build with Gradle
+    - name: Install Gradle (if gradlew is missing)
+      run: |
+        if [ ! -f ./gradlew ]; then
+          sudo apt-get update
+          sudo apt-get install -y gradle
+          gradle wrapper
+        fi
+
+    - name: Build with Gradle Wrapper
       run: ./gradlew build
-      # เปลี่ยนเป็น mvn clean install ถ้าใช้ Maven
 
     - name: Archive build artifacts
       uses: actions/upload-artifact@v4
