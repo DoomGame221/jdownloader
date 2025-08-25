@@ -1,4 +1,4 @@
-name: Java CI with Gradle Wrapper Generation
+name: Java CI with Gradle Wrapper Update
 
 on:
   workflow_dispatch:
@@ -17,12 +17,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Install Gradle (if gradlew is missing)
+    - name: Update Gradle Wrapper (if old version)
       run: |
-        if [ ! -f ./gradlew ]; then
+        if [ -f ./gradlew ]; then
+          ./gradlew wrapper --gradle-version 7.6
+        else
           sudo apt-get update
           sudo apt-get install -y gradle
-          gradle wrapper
+          gradle wrapper --gradle-version 7.6
         fi
 
     - name: Build with Gradle Wrapper
